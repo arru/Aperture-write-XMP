@@ -96,7 +96,9 @@ try
 			end tell
 			
 			-- DarkTable happens to expect image.JPG.xmp style sidecar naming
-			-- The standard specifies image.xmp style naming, so other apps might expect that scheme instead
+			-- The standard specifies image.xmp style naming, so other apps generally expect that scheme instead
+			-- to put sidecars in the standard location, uncomment:
+			-- set fileName to item 1 of (splitFilenameAtExtension out of fileName)
 			set sidecarDestination to exportFolderPath & fileName & "." & darktableSidecarExtension
 			set sidecarAlreadyPresent to checkFileExists at sidecarDestination
 			
@@ -183,6 +185,22 @@ to assertFileExists at filePath given message:messageStr
 	if not fileExists then error messageStr
 end assertFileExists
 
+to splitFilenameAtExtension out of posixPath
+	set AppleScript's text item delimiters to ""
+	set reversePath to reverse of characters of posixPath as text
+	set e to the offset of "." in reversePath
+	set l to length of posixPath
+	
+	set pathComponent to (text 1 thru (l - e) of posixPath)
+	if e = 0 then
+		set extensionComponent to ""
+	else
+		set extensionComponent to (text (l - e + 1) thru l of posixPath)
+	end if
+	
+	return {pathComponent, extensionComponent}
+end splitFilenameAtExtension
+
 to getMasterImagePath from imageVersion
 	tell application "Aperture"
 		set imageid to (id of imageVersion) as string
@@ -239,9 +257,8 @@ on writeApertureSidecar for imageVersion
 	set imageExportFile to file macPath as alias
 	set imageOutputPath to POSIX path of imageExportFile
 	
-	-- TODO probably chokes on paths containing dots
-	set e to the offset of "." in imageOutputPath
-	set sidecarPath to (text 1 thru (e - 1) of imageOutputPath) & "." & apertureSidecarExtension
+	set pathWithoutExtension to item 1 of (splitFilenameAtExtension out of imageOutputPath)
+	set sidecarPath to pathWithoutExtension & "." & apertureSidecarExtension
 	assertFileExists at sidecarPath given message:"Can't find written sidecar file for " & imageOutputPath
 	
 	assertFileExists at imageOutputPath given message:"Can't find written image file at expected place (" & imageOutputPath & ")"
