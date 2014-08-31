@@ -270,7 +270,9 @@ on checkIfMovie for mediaFileAlias
 		set fileType to kind of mediaFileAlias
 	end tell
 	
-	set isMovie to fileType contains "film" -- {"QuickTime-film", "Apple MPEG-4-film", "MPEG-4-film", "3GPP-film"}
+	-- WARNING: this file type check is language-dependent and possibly only works in english and swedish
+	set isMovie to fileType contains "film" or fileType contains "movie"
+	-- {"QuickTime-film", "Apple MPEG-4-film", "MPEG-4-film", "3GPP-film"}
 	--log fileType & " is movie=" & isMovie
 	return isMovie
 end checkIfMovie
