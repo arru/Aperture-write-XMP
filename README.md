@@ -30,3 +30,16 @@ For convenience, you can put the script in `~/Library/Scripts/Applications/Apert
 
 ### Acknowledgements
 This script was inspired by several [scripts by Brett Gross](http://brettgrossphotography.com). If you want to customize this script to your own workflow, Brett's script collection will provide recipes and help you overcome numerous AppleScript hurdles
+
+Bonus: album to keyword script
+==============================
+Assigns name of selected images' parent album as keyword to all selected images.
+This can enchance your Aperture to Darktable migration by making it easy to retain collections that have been set up as albums (lost when exporting to XMP) rather than keywords (part of XMP).
+
+Example: you have an album called "Berlin 2012". Running this script will add the keyword "Berlin 2012" to all selected images.
+
+### Usage
+1. Select an album to be "converted" into a keyword
+2. Change the album name if needed, to make a suitable, well-defined keyword
+3. Select all images within the album that you want to have the new keyword
+4. Run the script
