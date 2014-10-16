@@ -3,31 +3,40 @@
 tell application "Aperture" to set imageSel to (get selection)
 
 if imageSel is {} then
-	error "Please select one or more images."
+	error "One image in must be selected within the selected album."
 end if
 
-tell application "Aperture" to set albumName to (name of parent of item 1 of imageSel) as string
+tell application "Aperture"
+	set commonAlbum to (parent of item 1 of imageSel)
+	set newKeyword to (name of commonAlbum) as string
+	
+	tell commonAlbum
+		set imageList to its every image version
+	end tell
+end tell
 
 try
 	-- Check that all selected images have same parent album
-	repeat with i from 1 to count of imageSel
-		set currentImage to item i of imageSel
-		tell application "Aperture" to set currentImageName to name of parent of currentImage as string
-		assert against not currentImageName = albumName given message:"All selected images must be part of the same album; some are not."
+	repeat with i from 1 to count of imageList
+		set currentImage to item i of imageList
+		tell application "Aperture" to set currentCheckAlbum to parent of currentImage
+		assert against not currentCheckAlbum = commonAlbum given message:"All selected images must be part of the same album; some are not."
 	end repeat
 	
+	set currentImage to false
+	
 	--Set keyword
-	repeat with i from 1 to count of imageSel
-		set currentImage to item i of imageSel
+	repeat with i from 1 to count of imageList
+		set currentImage to item i of imageList
 		tell application "Aperture"
 			tell currentImage
-				make new keyword with properties {name:albumName}
+				make new keyword with properties {name:newKeyword}
 			end tell
 		end tell
 	end repeat
 	
 on error errStr number errorNumber
-	display dialog "An error processing " & (name of currentImage) & " stopped the script. Error: " & errStr
+	display dialog "An error processing " & (name of currentImage as string) & " stopped the script. Error: " & errStr
 end try
 
 to assert against condition given message:messageStr
