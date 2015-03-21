@@ -60,9 +60,9 @@ tell application "Aperture"
 end tell
 
 if numOffline > 0 then
-	error (numOffline as string) & " images are offline (on a storage device not connected). Please connect it and try again"
+	error (numOffline as string) & " image(s) are offline (on a storage device not connected). Please connect it and try again"
 else if numManaged > 0 then
-	error (numManaged as string) & " images are still managed by Aperture. It's a bad idea to mess around inside the Aperture library, so this script requires all selected images to be referenced to somewhere outside of the Aperture library. Relocate your originals and try again."
+	error (numManaged as string) & " image(s) are still managed by Aperture. It's a bad idea to mess around inside the Aperture library, so this script requires all selected images to be referenced to somewhere outside of the Aperture library. Relocate your originals and try again."
 end if
 
 set numFalselyTagged to 0
